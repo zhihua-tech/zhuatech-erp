@@ -61,3 +61,6 @@ curl -X POST http://localhost:8080/api/auth/login \
 
 接口仅作为社区源码第一版学习样例。商业使用、接口扩展和生产级安全加固须取得上海如静知华信息科技有限公司书面授权，详见项目根目录 [LICENSE](../LICENSE)。
 
+## 现金敞口分析
+
+`POST /api/erp/insights/cash-exposure`：根据应收、逾期应收、应付、现金余额和固定成本返回营运资金、逾期率、现金跑道与风险动作。

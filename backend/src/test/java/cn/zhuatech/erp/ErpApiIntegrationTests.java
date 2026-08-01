@@ -58,6 +58,18 @@ class ErpApiIntegrationTests {
         mvc.perform(get("/api/erp/dashboard")).andExpect(status().isForbidden());
     }
 
+    @Test
+    void managerCanAnalyzeCashExposure() throws Exception {
+        String token = login("demo", "Demo@2026", "MANAGER");
+        mvc.perform(post("/api/erp/insights/cash-exposure").header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"receivables\":1000000,\"overdueReceivables\":400000,\"payables\":700000,\"cashBalance\":300000,\"monthlyFixedCost\":200000}"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.netWorkingCapital").value(600000))
+            .andExpect(jsonPath("$.data.overdueRatio").value(0.4))
+            .andExpect(jsonPath("$.data.runwayMonths").value(1.5))
+            .andExpect(jsonPath("$.data.riskLevel").value("HIGH"));
+    }
+
     private String login(String username, String password, String expectedRole) throws Exception {
         String body = mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}"))
@@ -67,4 +79,3 @@ class ErpApiIntegrationTests {
         return JsonPath.read(body, "$.data.token");
     }
 }
-
