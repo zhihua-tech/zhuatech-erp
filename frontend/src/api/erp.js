@@ -11,8 +11,8 @@ const realApi = {
   salesOrders: () => http.get('/erp/sales-orders'),
   purchaseOrders: () => http.get('/erp/purchase-orders'),
   stockMovements: () => http.get('/erp/stock-movements'),
-  financeRecords: () => http.get('/erp/finance-records')
+  financeRecords: () => http.get('/erp/finance-records'),
+  materialPlan: data => http.post('/erp/insights/material-shortage', data)
 }
 
 export const api = import.meta.env.VITE_DEMO_MODE === 'true' ? mockApi : realApi
-

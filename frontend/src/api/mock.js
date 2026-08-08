@@ -1,6 +1,17 @@
 /* Copyright 2026 Shanghai Rujing Zhihua Information Technology Co., Ltd. */
 const delay = value => new Promise(resolve => setTimeout(() => resolve(value), 90))
 
+const buildMaterialPlan = ({ items }) => {
+  const planned = items.map(item => {
+    const projectedStock = item.onHand + item.inboundQty - item.forecastDemand
+    const suggestedOrder = Math.max(0, item.safetyStock + item.forecastDemand - item.onHand - item.inboundQty)
+    const riskLevel = projectedStock < 0 || (item.leadDays >= 14 && projectedStock < item.safetyStock) ? 'HIGH' : projectedStock < item.safetyStock ? 'MEDIUM' : 'LOW'
+    return { ...item, projectedStock, suggestedOrder, riskLevel, action: riskLevel === 'HIGH' ? '立即锁定供应商交期并创建补货单' : riskLevel === 'MEDIUM' ? '纳入本周补货评审并跟踪在途数量' : '维持当前补货节奏' }
+  }).sort((a, b) => ({ HIGH: 3, MEDIUM: 2, LOW: 1 }[b.riskLevel] - { HIGH: 3, MEDIUM: 2, LOW: 1 }[a.riskLevel]))
+  const shortageItems = planned.filter(item => item.riskLevel !== 'LOW').length
+  return { items: planned, shortageItems, capitalRequired: planned.reduce((sum, item) => sum + item.suggestedOrder * item.unitCost, 0), recommendation: shortageItems ? '优先下单高风险物料，并同步校验供应商承诺交期' : '库存结构健康，按周复核需求预测' }
+}
+
 const products = [
   { id: 4, sku: 'ZH-SV-001', name: '数字化实施服务包', category: '专业服务', unit: '项', costPrice: 12000, salePrice: 26000, stockOnHand: 9, safetyStock: 3, lowStock: false },
   { id: 3, sku: 'ZH-SW-ERP', name: '企业协同软件授权', category: '软件服务', unit: '套', costPrice: 4500, salePrice: 8800, stockOnHand: 48, safetyStock: 10, lowStock: false },
@@ -56,6 +67,6 @@ export const mockApi = {
   salesOrders: () => delay(salesOrders),
   purchaseOrders: () => delay(purchaseOrders),
   stockMovements: () => delay(stockMovements),
-  financeRecords: () => delay(financeRecords)
+  financeRecords: () => delay(financeRecords),
+  materialPlan: data => delay(buildMaterialPlan(data))
 }
-

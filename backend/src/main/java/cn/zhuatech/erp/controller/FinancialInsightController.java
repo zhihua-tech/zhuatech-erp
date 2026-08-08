@@ -3,6 +3,7 @@ package cn.zhuatech.erp.controller;
 
 import cn.zhuatech.erp.common.ApiResponse;
 import cn.zhuatech.erp.service.CashExposureService;
+import cn.zhuatech.erp.service.MaterialPlanningService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,10 +14,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/erp/insights")
 public class FinancialInsightController {
     private final CashExposureService service;
-    public FinancialInsightController(CashExposureService service) { this.service = service; }
+    private final MaterialPlanningService materialPlanningService;
+    public FinancialInsightController(CashExposureService service, MaterialPlanningService materialPlanningService) {
+        this.service = service;
+        this.materialPlanningService = materialPlanningService;
+    }
 
     @PostMapping("/cash-exposure")
     public ApiResponse<CashExposureService.Result> analyze(@Valid @RequestBody CashExposureService.Request request) {
         return ApiResponse.ok(service.analyze(request));
+    }
+
+    @PostMapping("/material-shortage")
+    public ApiResponse<MaterialPlanningService.Result> planMaterials(
+        @Valid @RequestBody MaterialPlanningService.Request request) {
+        return ApiResponse.ok(materialPlanningService.plan(request));
     }
 }

@@ -70,6 +70,25 @@ class ErpApiIntegrationTests {
             .andExpect(jsonPath("$.data.riskLevel").value("HIGH"));
     }
 
+    @Test
+    void managerCanGenerateMaterialShortagePlan() throws Exception {
+        String token = login("demo", "Demo@2026", "MANAGER");
+        mvc.perform(post("/api/erp/insights/material-shortage").header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {"items":[
+                      {"sku":"ZH-SN-016","name":"温湿度传感器","onHand":12,"safetyStock":30,"forecastDemand":60,"inboundQty":20,"leadDays":18,"unitCost":96},
+                      {"sku":"ZH-GW-001","name":"工业边缘网关","onHand":86,"safetyStock":20,"forecastDemand":30,"inboundQty":0,"leadDays":7,"unitCost":1680}
+                    ]}
+                    """))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.shortageItems").value(1))
+            .andExpect(jsonPath("$.data.capitalRequired").value(5568.00))
+            .andExpect(jsonPath("$.data.items[0].sku").value("ZH-SN-016"))
+            .andExpect(jsonPath("$.data.items[0].suggestedOrder").value(58))
+            .andExpect(jsonPath("$.data.items[0].riskLevel").value("HIGH"));
+    }
+
     private String login(String username, String password, String expectedRole) throws Exception {
         String body = mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}"))
