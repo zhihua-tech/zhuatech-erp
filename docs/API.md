@@ -64,3 +64,7 @@ curl -X POST http://localhost:8080/api/auth/login \
 ## 现金敞口分析
 
 `POST /api/erp/insights/cash-exposure`：根据应收、逾期应收、应付、现金余额和固定成本返回营运资金、逾期率、现金跑道与风险动作。
+
+## 营运资金周期
+
+`POST /api/erp/insights/working-capital`：返回应收、应付、库存周转天数、现金转换周期及对应改善动作。
