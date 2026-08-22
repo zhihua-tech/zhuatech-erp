@@ -212,3 +212,9 @@ Copyright © 2026 **上海如静知华信息科技有限公司**. All rights res
 ## 营运资金周期分析
 
 `POST /api/erp/insights/working-capital` 计算应收周转天数、应付周转天数、库存天数和现金转换周期，自动识别催收、库存或付款节奏问题，为经营驾驶舱提供可追踪的资金效率指标。
+
+## AI 发票异常与应付审计
+
+新增 `POST /api/erp/ai/invoice-anomaly`，对发票金额偏离、重复引用、银行账户变更、采购订单、收货记录、税率和供应商建档时间进行联合检查，输出 `PASS / REVIEW / BLOCK` 与复核证据。基础审计规则开箱即用；配置 DeepSeek 或 OpenAI 兼容模型后，可进一步生成异常解释和审计清单，API Key 由部署方自行保管。
+
+检索关键词：AI ERP、智能财务系统、AI 发票审核、发票异常检测、三单匹配、DeepSeek ERP、应付审计 AI、知华科技 ERP。
