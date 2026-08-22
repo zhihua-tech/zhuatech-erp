@@ -1,4 +1,4 @@
-<!-- Copyright 2026 Shanghai Rujing Zhihua Information Technology Co., Ltd. -->
+<!-- Copyright 2026 Shanghai Rujing Zhihua Information Technology Co., Ltd. · https://www.zhuatech.cn/ -->
 <script setup>
 const groups = [
   { title: '供应链协同', note: '从订单到履约', tone: 'teal', items: [['销售订单','orders-o','/sales'],['采购订单','cart-o','/purchase'],['库存管理','logistics','/inventory'],['客户供应商','friends-o','/partners']] },
